@@ -83,7 +83,7 @@ fn part2(numbers: &Vec<i32>, target : &i32) {
         cur_numbers.remove(idx);
         let cur_target = target - *cur_number;
 
-        println!("Target: {}", cur_target);
+        println!("Target: {}/{}", cur_target, target);
 
         let mut lower = 0;
         let mut upper = cur_numbers.len() - 1;
@@ -95,10 +95,11 @@ fn part2(numbers: &Vec<i32>, target : &i32) {
             println!("{}: {}({}) {}({}) {}({})", iteration,
                 lower, cur_numbers[lower], upper, cur_numbers[upper],
                 idx, cur_number);
+            println!("Sum: {}", cur_numbers[lower] + cur_numbers[upper] + cur_number);
 
             if cur_numbers[lower] + cur_numbers[upper] == cur_target {
-                println!("{}*{}*{} = {}", numbers[upper], numbers[lower], cur_number,
-                numbers[upper]*numbers[lower]*cur_number);
+                println!("{}*{}*{} = {}", cur_numbers[upper], cur_numbers[lower], cur_number,
+                cur_numbers[upper]*cur_numbers[lower]*cur_number);
                 return;
             }
             upper -= 1;
