@@ -76,47 +76,38 @@ fn part1(numbers: &Vec<i32>, target : &i32) {
 
 
 fn part2(numbers: &Vec<i32>, target : &i32) {
-    let mut lower = 0;
-    let mut upper = numbers.len() - 1;
-    let mut third = 0;
-
     let mut iteration = 0;
-   
-    for (idx, n) in numbers.iter().enumerate() {
+    let mut cur_numbers = numbers.clone();
 
-        numbers.remove(idx);
+    for (idx, cur_number) in numbers.iter().enumerate() {
+        cur_numbers.remove(idx);
+        let cur_target = target - *cur_number;
 
-        while numbers[upper] + numbers[lower] != *target {
-            lower = find_closest_down(numbers, target - numbers[upper]);
-            upper = find_closest_up(numbers, target - numbers[lower]);
-            println!("{}: {}({}) {}({})", iteration, lower, numbers[lower], upper, numbers[upper]);
+        println!("Target: {}", cur_target);
+
+        let mut lower = 0;
+        let mut upper = cur_numbers.len() - 1;
+
+        while upper > lower {
+            lower = find_closest_down(&cur_numbers, cur_target - cur_numbers[upper]);
+            upper = find_closest_up(&cur_numbers, cur_target - cur_numbers[lower]);
+
             println!("{}: {}({}) {}({}) {}({})", iteration,
-                lower, numbers[lower], upper, numbers[upper],
-                third, numbers[third]);
+                lower, cur_numbers[lower], upper, cur_numbers[upper],
+                idx, cur_number);
+
+            if cur_numbers[lower] + cur_numbers[upper] == cur_target {
+                println!("{}*{}*{} = {}", numbers[upper], numbers[lower], cur_number,
+                numbers[upper]*numbers[lower]*cur_number);
+                return;
+            }
+            upper -= 1;
 
            iteration += 1;
         }
 
-        numbers.insert(idx, n);
+        cur_numbers.insert(idx, *cur_number);
     }
-
-
-    while numbers[upper] + numbers[lower] + numbers[third] != *target {
-        lower = find_closest_down(numbers, target - numbers[upper]);
-        upper = find_closest_up(numbers, target - numbers[lower]);
-
-        let third_exact = target - numbers[upper] - numbers[lower];
-
-        let third_search = find_exact(numbers, third_exact);
-        third = third_search.unwrap_or_else(|x| x);
-
-        iteration += 1;
-        if third_search.is_err() {
-            upper -= 1;
-        }
-    }
-
-    println!("{}*{} = {}", numbers[upper], numbers[lower], numbers[upper]*numbers[lower]);
 }
 
 
